@@ -34,16 +34,8 @@ public class Priority {
     @Column(name = "color", nullable = true, length = -1)
     private String color;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
-
     @Column(name = "user_id")
     private Long userId;
-
-    @OneToMany(mappedBy = "priority", fetch = FetchType.LAZY)
-    private List<Task> tasks;
 
     @Override
     public boolean equals(Object o) {
