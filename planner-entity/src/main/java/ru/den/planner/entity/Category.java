@@ -37,16 +37,8 @@ public class Category {
     @Column(name = "uncompleted_count", updatable = false)
     private Integer uncompletedCount;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
-
     @Column(name = "user_id")
     private Long userId;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Task> tasks;
 
     @Override
     public boolean equals(Object o) {

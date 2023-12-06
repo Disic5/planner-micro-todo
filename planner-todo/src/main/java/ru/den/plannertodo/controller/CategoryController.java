@@ -29,9 +29,14 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> findAllCategory(){
+        return ResponseEntity.ok(service.findAll());
+    }
+
     @PostMapping("/all")
     public ResponseEntity<List<Category>> findAll(@RequestBody Long userId){
-        return ResponseEntity.ok(service.findAll(userId));
+        return ResponseEntity.ok(service.findAllByUserId(userId));
     }
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
