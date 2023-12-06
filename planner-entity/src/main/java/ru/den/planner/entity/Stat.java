@@ -19,7 +19,7 @@ import java.util.Objects;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Entity
-@Table(name = "stat", schema = "java_begin", catalog = "javaBegin")
+@Table(name = "stat", schema = "todo", catalog = "planner_todo")
 public class Stat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

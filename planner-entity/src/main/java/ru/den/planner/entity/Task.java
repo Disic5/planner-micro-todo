@@ -21,7 +21,7 @@ import java.util.Objects;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@Table(name = "task", schema = "java_begin", catalog = "javaBegin")
+@Table(name = "task", schema = "users", catalog = "planner_users")
 public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
