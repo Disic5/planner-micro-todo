@@ -10,6 +10,7 @@
         </processorPath>
         <module name="planner-todo.main" />
         <module name="planner-entity.main" />
+        <module name="planner-utils.main" />
       </profile>
     </annotationProcessing>
   </component>
