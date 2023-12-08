@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Table(name = "user_data", schema = "todo", catalog = "planner_todo")
+@Table(name = "user_data", schema = "users", catalog = "planner_users")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class User {
     @Id
