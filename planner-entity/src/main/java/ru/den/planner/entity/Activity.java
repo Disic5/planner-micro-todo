@@ -34,11 +34,6 @@ public class Activity {
     @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
     private Boolean activated;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @MapsId
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
-
     @Column(name = "user_id")
     private Long userId;
 

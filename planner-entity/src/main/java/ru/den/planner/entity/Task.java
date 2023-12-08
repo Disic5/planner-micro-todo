@@ -21,7 +21,7 @@ import java.util.Objects;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@Table(name = "task", schema = "users", catalog = "planner_users")
+@Table(name = "task", schema = "todo", catalog = "planner_todo")
 public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -38,11 +38,6 @@ public class Task {
 
     @Column(name = "task_data")
     private Date taskData;
-
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
 
     @Column(name = "user_id")
     private Long userId;

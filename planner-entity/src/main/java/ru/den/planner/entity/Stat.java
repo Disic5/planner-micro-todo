@@ -32,12 +32,6 @@ public class Stat {
     @Column(name = "uncompleted_total", updatable = false)
     private Long uncompletedTotal;
 
-//    @JsonIgnore
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @MapsId
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
-
     @Column(name = "user_id")
     private Long userId;
 
