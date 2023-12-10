@@ -1,22 +1,21 @@
 package ru.den.plannerusers.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import ru.den.planner.dto.UserDto;
 import ru.den.planner.entity.User;
 import ru.den.plannerusers.serch.UserSearchValues;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
     void addUser(User user);
 
-    Optional<User> findUserById(Long id);
+    UserDto findUserById(Long id);
 
-    List<User> findAllUser();
+    List<UserDto> findAllUser();
 
-    Optional<User> findUserByEmail(String email);
+    UserDto findUserByEmail(String email);
 
     void deleteUserById(Long id);
 
@@ -24,6 +23,6 @@ public interface UserService {
 
     User updateUser(User user);
 
-    Page<User> findUserByParams(UserSearchValues userSearchValues);
+    Page<UserDto> findUserByParams(UserSearchValues userSearchValues);
 
 }

@@ -8,12 +8,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.den.planner.dto.UserDto;
 import ru.den.planner.entity.User;
+import ru.den.planner.mapper.UserMapper;
 import ru.den.plannerusers.repository.UserRepository;
 import ru.den.plannerusers.serch.UserSearchValues;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,36 +27,37 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final UserRepository repository;
 
+    @Autowired
+    private final UserMapper userMapper;
+
     @Transactional
     public void addUser(User user) {
         repository.findByEmail(user.getEmail())
-                .ifPresent(u -> {
+                  .ifPresent(u -> {
                     throw new IllegalArgumentException("Пользователь с таким email уже сужествует");
                 });
         repository.save(user);
     }
 
-    public Optional<User> findUserById(Long id) {
-        Optional<User> userOptional = repository.findById(id);
-        if (userOptional.isPresent()) {
-            return userOptional;
-        } else {
-            throw new EntityNotFoundException("Пользователь не найден с id " + id);
-        }
+    public UserDto findUserById(Long id) {
+        return repository.findById(id)
+                .map(userMapper)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден с id " + id));
     }
 
-    public List<User> findAllUser() {
-        return repository.findAll();
+    public List<UserDto> findAllUser() {
+        return repository.findAll()
+                .stream()
+                .map(userMapper)
+                .collect(Collectors.toList());
     }
 
 
-    public Optional<User> findUserByEmail(String email) {
-        Optional<User> optionalUser = repository.findByEmail(email);
-        if (optionalUser.isPresent()) {
-            return optionalUser;
-        } else {
-            throw new EntityNotFoundException("Пользователь не найден с email " + email);
-        }
+    public UserDto findUserByEmail(String email) {
+        return repository.findByEmail(email)
+                .map(userMapper)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден с email " + email));
+
     }
 
     @Transactional
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findUserByParams(UserSearchValues userSearchValues) {
+    public Page<UserDto> findUserByParams(UserSearchValues userSearchValues) {
         String email = userSearchValues.getEmail() != null ? userSearchValues.getEmail() : null;
         String name = userSearchValues.getName() != null ? userSearchValues.getName() : null;
 
@@ -98,6 +102,6 @@ public class UserServiceImpl implements UserService {
 
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
-        return repository.findByParams(email, name, pageRequest);
+        return repository.findByParams(email, name, pageRequest).map(userMapper);
     }
 }

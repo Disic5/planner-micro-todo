@@ -6,36 +6,43 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.den.planner.dto.UserDto;
 import ru.den.planner.entity.User;
 import ru.den.plannerusers.serch.UserSearchValues;
 import ru.den.plannerusers.service.UserService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
-    private static final String ID_COLUMN = "id";
-
     @Autowired
     private final UserService service;
 
     @PostMapping("/id")
-    public ResponseEntity<Optional<User>> findUserById(@RequestBody Long id) {
-        return ResponseEntity.ok(service.findUserById(id));
+    public ResponseEntity<UserDto> findUserById(@RequestBody Long id) {
+        try {
+            return ResponseEntity.ok(service.findUserById(id));
+        }catch (Exception e){
+            return new ResponseEntity("Пользователь не найден", HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> findUserById() {
+    public ResponseEntity<List<UserDto>> findUserById() {
         return ResponseEntity.ok(service.findAllUser());
     }
 
     @PostMapping("/email")
-    public ResponseEntity<Optional<User>> findUserByEmail(@RequestBody String email) {
-        return ResponseEntity.ok(service.findUserByEmail(email));
+    public ResponseEntity<UserDto> findUserByEmail(@RequestBody String email) {
+        try {
+            return ResponseEntity.ok(service.findUserByEmail(email));
+        }catch (Exception e){
+            return new ResponseEntity("Пользователь с таким email  не существует", HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PostMapping("/add")
@@ -76,11 +83,11 @@ public class UserController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Page<User>> search(@RequestBody UserSearchValues userSearchValues) {
+    public ResponseEntity<Page<UserDto>> search(@RequestBody UserSearchValues userSearchValues) {
         if (userSearchValues == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        Page<User> result = service.findUserByParams(userSearchValues);
+        Page<UserDto> result = service.findUserByParams(userSearchValues);
 
         return ResponseEntity.ok(result);
     }
