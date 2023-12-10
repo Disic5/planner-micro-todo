@@ -1,14 +1,14 @@
 package ru.den.plannerusers.controller;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.den.planner.entity.User;
+import ru.den.plannerusers.serch.UserSearchValues;
 import ru.den.plannerusers.service.UserService;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
+
+    private static final String ID_COLUMN = "id";
 
     @Autowired
     private final UserService service;
@@ -33,7 +35,7 @@ public class UserController {
 
     @PostMapping("/email")
     public ResponseEntity<Optional<User>> findUserByEmail(@RequestBody String email) {
-        return ResponseEntity.ok( service.findUserByEmail(email));
+        return ResponseEntity.ok(service.findUserByEmail(email));
     }
 
     @PostMapping("/add")
@@ -41,6 +43,15 @@ public class UserController {
         try {
             service.addUser(user);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        try {
+            return ResponseEntity.ok(service.updateUser(user));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -58,11 +69,20 @@ public class UserController {
     public ResponseEntity<?> deleteUserById(@RequestBody String email) {
         try {
             service.deleteUserByEmail(email);
-        } catch (Exception e){
-           return new ResponseEntity<>("Email не существует", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Email не существует", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<Page<User>> search(@RequestBody UserSearchValues userSearchValues) {
+        if (userSearchValues == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        Page<User> result = service.findUserByParams(userSearchValues);
+
+        return ResponseEntity.ok(result);
+    }
 
 }
