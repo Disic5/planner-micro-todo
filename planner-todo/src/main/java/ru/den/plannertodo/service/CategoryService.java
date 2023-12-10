@@ -21,7 +21,7 @@ public class CategoryService {
         return repository.findById(id);
     }
 
-    public List<Category> findAll(Long userId){
+    public List<Category> findAllByUserId(Long userId){
         return repository.findAllByUserId(userId);
     }
 
@@ -39,6 +39,10 @@ public class CategoryService {
 
     public List<Category> findByTitle(String title, Long userId) {
         return repository.findByTitle(title, userId);
+    }
+
+    public List<Category> findAll(){
+        return repository.findAll();
     }
 
 }

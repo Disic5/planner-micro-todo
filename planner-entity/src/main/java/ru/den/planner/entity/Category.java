@@ -20,7 +20,7 @@ import java.util.Objects;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Entity
-@Table(name = "category", schema = "java_begin", catalog = "javaBegin")
+@Table(name = "category", schema = "todo", catalog = "planner_todo")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category {
     @Id
@@ -37,16 +37,8 @@ public class Category {
     @Column(name = "uncompleted_count", updatable = false)
     private Integer uncompletedCount;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
-
     @Column(name = "user_id")
     private Long userId;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Task> tasks;
 
     @Override
     public boolean equals(Object o) {

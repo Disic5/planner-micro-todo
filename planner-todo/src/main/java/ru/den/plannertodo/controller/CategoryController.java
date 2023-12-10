@@ -22,16 +22,21 @@ public class CategoryController {
     @PostMapping("/id")
     public ResponseEntity<Category> findById(@RequestBody Long id) {
         Optional<Category> category = service.findById(id);
-        if (category.isPresent()){
+        if (category.isPresent()) {
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
-        }else {
+        } else {
             throw new NoSuchElementException("Category with this id " + id + " not found");
         }
     }
 
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> findAllCategory() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
     @PostMapping("/all")
-    public ResponseEntity<List<Category>> findAll(@RequestBody Long userId){
-        return ResponseEntity.ok(service.findAll(userId));
+    public ResponseEntity<List<Category>> findAll(@RequestBody Long userId) {
+        return ResponseEntity.ok(service.findAllByUserId(userId));
     }
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
@@ -41,14 +46,6 @@ public class CategoryController {
 
     @PutMapping(value = "/update", consumes = "application/json;charset=UTF-8")
     public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
-        //  проверкм на обязательные параметры
-//        if (category != null && category.getId() != 0) {
-//            return new ResponseEntity("Id must be null", HttpStatus.NOT_ACCEPTABLE);
-//        }
-//        //если передали пустое значение title
-//        if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
-//            return new ResponseEntity("Title must be not null", HttpStatus.NOT_ACCEPTABLE);
-//        }
         service.updateCategory(category);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -64,7 +61,7 @@ public class CategoryController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deletePriority(@PathVariable Long id) {
-        if(service.findById(id).isPresent()){
+        if (service.findById(id).isPresent()) {
             service.deleteCategory(id);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {

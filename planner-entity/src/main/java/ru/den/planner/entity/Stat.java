@@ -19,7 +19,7 @@ import java.util.Objects;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Entity
-@Table(name = "stat", schema = "java_begin", catalog = "javaBegin")
+@Table(name = "stat", schema = "todo", catalog = "planner_todo")
 public class Stat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -31,12 +31,6 @@ public class Stat {
 
     @Column(name = "uncompleted_total", updatable = false)
     private Long uncompletedTotal;
-
-//    @JsonIgnore
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @MapsId
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
 
     @Column(name = "user_id")
     private Long userId;

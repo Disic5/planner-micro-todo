@@ -19,9 +19,10 @@ import java.util.Set;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Entity
-@Table(name = "role_data", schema = "java_begin", catalog = "javaBegin")
+@Table(name = "role_data", schema = "users", catalog = "planner_users")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -32,7 +33,7 @@ public class Role {
 
 //    @JsonManagedReference
     @ManyToMany(fetch = FetchType.LAZY) // таблица role ссылается на user через промежуточную таблицу user_role
-    @JoinTable(name = "user_role", schema = "java_begin",
+    @JoinTable(name = "user_role", schema = "users",
             joinColumns = @JoinColumn(name = "role_id", updatable = false),
             inverseJoinColumns = @JoinColumn(name = "user_id", updatable = false))
     private Set<User> users;

@@ -28,6 +28,7 @@ dependencies {
 
     implementation 'ru.den:planner-entity'
     implementation 'ru.den:planner-utils'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //lombok
@@ -48,4 +49,3 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
-

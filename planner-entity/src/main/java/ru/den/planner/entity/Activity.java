@@ -16,7 +16,7 @@ import java.util.Objects;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Entity
-@Table(name = "activity", schema = "java_begin", catalog = "javaBegin")
+@Table(name = "activity", schema = "todo", catalog = "planner_todo")
 public class Activity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -33,11 +33,6 @@ public class Activity {
     //автоматическое преобразование булеана в число, конвертация
     @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
     private Boolean activated;
-
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @MapsId
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user;
 
     @Column(name = "user_id")
     private Long userId;
