@@ -1,7 +1,7 @@
 package ru.den.plannertodo.service;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,9 +14,10 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class TaskService {
-    @Autowired
-    private TaskRepository repository;
+
+    private final TaskRepository repository;
 
     public List<Task> findByUserId(Long userId) {
         return repository.findByUserIdOrderByTitleAsc(userId);

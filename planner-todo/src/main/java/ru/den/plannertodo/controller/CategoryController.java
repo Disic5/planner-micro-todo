@@ -1,16 +1,17 @@
 package ru.den.plannertodo.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.den.planner.dto.CategoryDto;
 import ru.den.planner.entity.Category;
 import ru.den.plannertodo.search.CategorySearchValue;
 import ru.den.plannertodo.service.CategoryService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/category")
@@ -20,23 +21,26 @@ public class CategoryController {
     private CategoryService service;
 
     @PostMapping("/id")
-    public ResponseEntity<Category> findById(@RequestBody Long id) {
-        Optional<Category> category = service.findById(id);
-        if (category.isPresent()) {
-            return new ResponseEntity<>(category.get(), HttpStatus.OK);
-        } else {
-            throw new NoSuchElementException("Category with this id " + id + " not found");
+    public ResponseEntity<CategoryDto> findById(@RequestBody Long id) {
+        try {
+            return ResponseEntity.ok(service.findById(id));
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Category with this id " + id + " not found");
         }
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<Category>> findAllCategory() {
+    public ResponseEntity<List<CategoryDto>> findAllCategory() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping("/all")
-    public ResponseEntity<List<Category>> findAll(@RequestBody Long userId) {
-        return ResponseEntity.ok(service.findAllByUserId(userId));
+    public ResponseEntity<List<CategoryDto>> findAllCategoryByUserId(@RequestBody Long userId) {
+        try {
+            return ResponseEntity.ok(service.findAllByUserId(userId));
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Category with this userId " + userId + " not found");
+        }
     }
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
@@ -51,17 +55,17 @@ public class CategoryController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValue categorySearchValue) {
+    public ResponseEntity<List<CategoryDto>> search(@RequestBody CategorySearchValue categorySearchValue) {
         if (categorySearchValue.getUserId() != null && categorySearchValue.getUserId() == 0) {
             return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);
         }
-        List<Category> list = service.findByTitle(categorySearchValue.getTitle(), categorySearchValue.getUserId());
+        List<CategoryDto> list = service.findByTitle(categorySearchValue.getTitle(), categorySearchValue.getUserId());
         return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deletePriority(@PathVariable Long id) {
-        if (service.findById(id).isPresent()) {
+        if (Objects.nonNull(service.findById(id))) {
             service.deleteCategory(id);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {

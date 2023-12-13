@@ -1,48 +1,23 @@
 package ru.den.plannertodo.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
+import ru.den.planner.dto.CategoryDto;
 import ru.den.planner.entity.Category;
-import ru.den.plannertodo.repository.CategoryRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class CategoryService {
+public interface CategoryService {
+    CategoryDto findById(Long id);
 
-    private final CategoryRepository repository;
+    List<CategoryDto> findAllByUserId(Long userId);
 
-    public Optional<Category> findById(Long id) {
-        return repository.findById(id);
-    }
+    Category addCategory(Category category);
 
-    public List<Category> findAllByUserId(Long userId){
-        return repository.findAllByUserId(userId);
-    }
+    void updateCategory(Category category);
 
-    public Category addCategory(Category category) {
-        return repository.save(category);
-    }
+    void deleteCategory(Long id);
 
-    public void updateCategory(Category category) {
-        repository.save(category);
-    }
+    List<CategoryDto> findByTitle(String title, Long userId);
 
-    public void deleteCategory(Long id) {
-        repository.deleteById(id);
-    }
-
-    public List<Category> findByTitle(String title, Long userId) {
-        return repository.findByTitle(title, userId);
-    }
-
-    public List<Category> findAll(){
-        return repository.findAll();
-    }
+    List<CategoryDto> findAll();
 
 }

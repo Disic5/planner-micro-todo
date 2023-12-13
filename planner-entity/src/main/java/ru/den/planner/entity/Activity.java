@@ -29,7 +29,6 @@ public class Activity {
 
     @Basic
     @Column(name = "activated", nullable = false)
-
     //автоматическое преобразование булеана в число, конвертация
     @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
     private Boolean activated;
