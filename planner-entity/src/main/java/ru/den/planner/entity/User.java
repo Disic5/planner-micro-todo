@@ -36,7 +36,6 @@ public class User {
     @Column(name = "email")
     private String email;
 
-//    @JsonBackReference
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Role> roles;
 

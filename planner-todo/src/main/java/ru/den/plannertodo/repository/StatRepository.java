@@ -4,7 +4,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.den.planner.entity.Stat;
 
+import java.util.Optional;
+
 @Repository
 public interface StatRepository extends CrudRepository<Stat,Long> {
-    Stat findByUserId (Long userId);
+    Optional<Stat> findByUserId (Long userId);
 }

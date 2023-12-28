@@ -1,19 +1,9 @@
 package ru.den.plannertodo.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.den.planner.entity.Stat;
-import ru.den.plannertodo.repository.StatRepository;
+import ru.den.planner.dto.StatDto;
 
-@Service
-@Transactional
-@RequiredArgsConstructor
-public class StatService{
+public interface StatService {
 
-    private final StatRepository repository;
+    StatDto findStatByUserId(Long userId);
 
-    public Stat findStatByUserId(Long userId){
-        return repository.findByUserId(userId);
-    }
 }

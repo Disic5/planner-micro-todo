@@ -1,42 +1,22 @@
 package ru.den.plannertodo.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import ru.den.planner.dto.PriorityDto;
 import ru.den.planner.entity.Priority;
-import ru.den.plannertodo.repository.PriorityRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class PriorityService {
-    private final PriorityRepository repository;
+public interface PriorityService {
 
-    public Optional<Priority> findById(Long id) {
-        return repository.findById(id);
-    }
+    PriorityDto findById(Long id);
 
-    public Priority addPriority(Priority priority) {
-        return repository.save(priority);
-    }
+    Priority addPriority(Priority priority);
 
-    public void updatePriority(Priority priority) {
-        repository.save(priority);
-    }
+    void updatePriority(Priority priority);
 
-    public void deletePriority(Long id) {
-        repository.deleteById(id);
-    }
+    void deletePriority(Long id);
 
-    public List<Priority> findByTitle(String title, Long userId) {
-        return repository.findByTitle(title, userId);
-    }
+    List<PriorityDto> findByTitle(String title, Long userId);
 
-    public List<Priority> findAllPriority() {
-        return repository.findAll();
-    }
+    List<PriorityDto> findAllPriority();
+
 }
-

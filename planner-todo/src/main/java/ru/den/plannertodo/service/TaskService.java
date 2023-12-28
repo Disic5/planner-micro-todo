@@ -1,51 +1,29 @@
 package ru.den.plannertodo.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import ru.den.planner.dto.TaskDto;
 import ru.den.planner.entity.Task;
-import ru.den.plannertodo.repository.TaskRepository;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@Transactional
-@RequiredArgsConstructor
-public class TaskService {
+public interface TaskService {
 
-    private final TaskRepository repository;
+    List<TaskDto> findByUserId(Long userId);
 
-    public List<Task> findByUserId(Long userId) {
-        return repository.findByUserIdOrderByTitleAsc(userId);
-    }
+    Task addTask(Task task);
 
-    public Task addTask(Task task) {
-        return repository.save(task);
-    }
+    Task updateTask(Task task);
 
-    public Task updateTask(Task task) {
-        return repository.save(task);
-    }
+    void deleteTaskById(Long id);
 
-    public void deleteTaskById(Long id) {
-        repository.deleteById(id);
-    }
+    Optional<TaskDto> findTaskById(Long id);
 
-    public Optional<Task> findTaskById(Long id) {
-        return repository.findById(id);
-    }
+    Page<Task> findByParams(String text, Boolean completed, Long priorityId,
+                            Long categoryId, Long userId,
+                            Date dateFrom, Date dateTo, Pageable paging);
 
-    public Page<Task> findByParams(String text, Boolean completed, Long priorityId,
-                                   Long categoryId, Long userId,
-                                   Date dateFrom, Date dateTo, Pageable paging) {
-        return repository.findByParams(text, completed, priorityId, categoryId, userId, dateFrom, dateTo, paging);
-    }
-
-    public List<Task> findAllTask(){
-        return repository.findAll();
-    }
+    List<TaskDto> findAllTask();
 }

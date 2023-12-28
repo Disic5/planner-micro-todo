@@ -1,7 +1,6 @@
 package ru.den.planner.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +39,9 @@ public class Category {
 
     @Column(name = "user_id")
     private Long userId;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<Task> task = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

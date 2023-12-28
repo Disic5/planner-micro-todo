@@ -1,4 +1,4 @@
-package ru.den.plannertodo.service;
+package ru.den.plannertodo.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -8,9 +8,11 @@ import ru.den.planner.dto.CategoryDto;
 import ru.den.planner.entity.Category;
 import ru.den.planner.mapper.CategoryMapper;
 import ru.den.plannertodo.repository.CategoryRepository;
+import ru.den.plannertodo.service.CategoryService;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +47,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        repository.deleteById(id);
+        Optional<Category> byId = repository.findById(id);
+        if (byId.isPresent()){
+            repository.deleteById(id);
+        }else {
+            throw new EntityNotFoundException("Категория с id: " + id + " не найдена");
+        }
     }
 
     public List<CategoryDto> findByTitle(String title, Long userId) {

@@ -1,7 +1,7 @@
 package ru.den.plannertodo.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,16 +9,19 @@ import ru.den.planner.dto.CategoryDto;
 import ru.den.planner.entity.Category;
 import ru.den.plannertodo.search.CategorySearchValue;
 import ru.den.plannertodo.service.CategoryService;
+import ru.den.plannerutils.resttemplate.UserRestBuilder;
 
 import java.util.List;
 import java.util.Objects;
 
 @RestController
 @RequestMapping("/category")
+@RequiredArgsConstructor
 public class CategoryController {
 
-    @Autowired
-    private CategoryService service;
+    private final UserRestBuilder userRestBuilder;
+
+    private final CategoryService service;
 
     @PostMapping("/id")
     public ResponseEntity<CategoryDto> findById(@RequestBody Long id) {
@@ -45,7 +48,10 @@ public class CategoryController {
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-        return ResponseEntity.ok(service.addCategory(category));
+        if (userRestBuilder.userExists(category.getUserId())){
+            return ResponseEntity.ok(service.addCategory(category));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/update", consumes = "application/json;charset=UTF-8")
@@ -64,7 +70,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deletePriority(@PathVariable Long id) {
+    public ResponseEntity<?> deletePriority(@PathVariable Long id) {
         if (Objects.nonNull(service.findById(id))) {
             service.deleteCategory(id);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);

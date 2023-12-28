@@ -1,31 +1,30 @@
 package ru.den.plannertodo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.den.planner.dto.PriorityDto;
 import ru.den.planner.entity.Priority;
 import ru.den.plannertodo.search.PrioritySearchValue;
-import ru.den.plannertodo.service.PriorityService;
+import ru.den.plannertodo.service.impl.PriorityServiceImpl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/priority")
+@RequiredArgsConstructor
 public class PriorityController {
 
-    @Autowired
-    private PriorityService service;
+    private final PriorityServiceImpl service;
 
     @PostMapping("/id")
-    public ResponseEntity<Priority> findById(@RequestBody Long id) {
-        Optional<Priority> priority = service.findById(id);
-        if (priority.isPresent()) {
-            return new ResponseEntity<>(priority.get(), HttpStatus.OK);
-        } else {
-            throw new NoSuchElementException("Priority with this id " + id + " not found");
+    public ResponseEntity<PriorityDto> findById(@RequestBody Long id) {
+        try{
+            return ResponseEntity.ok(service.findById(id));
+        } catch (Exception e){
+            throw new EntityNotFoundException("Priority with this id " + id + " not found");
         }
     }
 
@@ -41,26 +40,26 @@ public class PriorityController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Priority>> search(@RequestBody PrioritySearchValue prioritySearchValue) {
+    public ResponseEntity<List<PriorityDto>> search(@RequestBody PrioritySearchValue prioritySearchValue) {
         if (prioritySearchValue.getUserId() != null && prioritySearchValue.getUserId() == 0) {
             return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);
         }
-        List<Priority> list = service.findByTitle(prioritySearchValue.getTitle(), prioritySearchValue.getUserId());
+        List<PriorityDto> list = service.findByTitle(prioritySearchValue.getTitle(), prioritySearchValue.getUserId());
         return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deletePriority(@PathVariable Long id) {
-        if (service.findById(id).isPresent()) {
+    public ResponseEntity<?> deletePriority(@PathVariable Long id) {
+        try {
             service.deletePriority(id);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Priority>> findAllPriority(){
+    public ResponseEntity<List<PriorityDto>> findAllPriority(){
         return ResponseEntity.ok(service.findAllPriority());
     }
 
