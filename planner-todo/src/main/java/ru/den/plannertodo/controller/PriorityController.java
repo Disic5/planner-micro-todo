@@ -9,6 +9,8 @@ import ru.den.planner.dto.PriorityDto;
 import ru.den.planner.entity.Priority;
 import ru.den.plannertodo.search.PrioritySearchValue;
 import ru.den.plannertodo.service.impl.PriorityServiceImpl;
+import ru.den.plannerutils.rest.resttemplate.UserRestBuilder;
+import ru.den.plannerutils.rest.webclient.UserWebClientBuilder;
 
 import java.util.List;
 
@@ -16,6 +18,8 @@ import java.util.List;
 @RequestMapping("/priority")
 @RequiredArgsConstructor
 public class PriorityController {
+    private final UserRestBuilder userRestBuilder;
+    private final UserWebClientBuilder userWebClientBuilder;
 
     private final PriorityServiceImpl service;
 
@@ -30,7 +34,10 @@ public class PriorityController {
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
     public ResponseEntity<Priority> addPriority(@RequestBody Priority priority) {
-        return ResponseEntity.ok(service.addPriority(priority));
+        if (userWebClientBuilder.userExists(priority.getUserId())){
+            return ResponseEntity.ok(service.addPriority(priority));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/update", consumes = "application/json;charset=UTF-8")

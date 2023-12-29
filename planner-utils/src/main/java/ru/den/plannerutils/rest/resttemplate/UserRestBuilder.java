@@ -1,6 +1,5 @@
-package ru.den.plannerutils.resttemplate;
+package ru.den.plannerutils.rest.resttemplate;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

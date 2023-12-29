@@ -9,7 +9,8 @@ import ru.den.planner.dto.CategoryDto;
 import ru.den.planner.entity.Category;
 import ru.den.plannertodo.search.CategorySearchValue;
 import ru.den.plannertodo.service.CategoryService;
-import ru.den.plannerutils.resttemplate.UserRestBuilder;
+import ru.den.plannerutils.rest.resttemplate.UserRestBuilder;
+import ru.den.plannerutils.rest.webclient.UserWebClientBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,8 @@ import java.util.Objects;
 public class CategoryController {
 
     private final UserRestBuilder userRestBuilder;
+
+    private final UserWebClientBuilder userWebClientBuilder;
 
     private final CategoryService service;
 
@@ -48,7 +51,7 @@ public class CategoryController {
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-        if (userRestBuilder.userExists(category.getUserId())){
+        if (userWebClientBuilder.userExists(category.getUserId())){
             return ResponseEntity.ok(service.addCategory(category));
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

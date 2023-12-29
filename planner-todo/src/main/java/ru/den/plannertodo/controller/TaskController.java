@@ -11,6 +11,8 @@ import ru.den.planner.dto.TaskDto;
 import ru.den.planner.entity.Task;
 import ru.den.plannertodo.search.TaskSearchValues;
 import ru.den.plannertodo.service.impl.TaskServiceImpl;
+import ru.den.plannerutils.rest.resttemplate.UserRestBuilder;
+import ru.den.plannerutils.rest.webclient.UserWebClientBuilder;
 
 import java.util.*;
 
@@ -18,7 +20,8 @@ import java.util.*;
 @RequestMapping("/task")
 @RequiredArgsConstructor
 public class TaskController {
-
+    private final UserRestBuilder userRestBuilder;
+    private final UserWebClientBuilder userWebClientBuilder;
     private final TaskServiceImpl service;
     private static final String ID_COLUMN = "id";
 
@@ -39,7 +42,10 @@ public class TaskController {
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
-        return ResponseEntity.ok(service.addTask(task));
+        if (userWebClientBuilder.userExists(task.getUserId())){
+            return ResponseEntity.ok(service.addTask(task));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/update", consumes = "application/json;charset=UTF-8")
