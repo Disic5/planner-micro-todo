@@ -20,7 +20,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final UserRestBuilder userRestBuilder;
+//    private final UserRestBuilder userRestBuilder;
 
     private final UserWebClientBuilder userWebClientBuilder;
 
@@ -54,6 +54,12 @@ public class CategoryController {
         if (userWebClientBuilder.userExists(category.getUserId())){
             return ResponseEntity.ok(service.addCategory(category));
         }
+        /**
+           // подписываемся на резьтат (ассинхронный вызов)
+           userWebClientBuilder.userExistAsync(category.getUserId()).subscribe(user -> System.out.println("user= " + user));
+         */
+
+
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 

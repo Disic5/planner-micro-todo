@@ -1,7 +1,6 @@
 package ru.den.plannerusers.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +9,7 @@ import ru.den.planner.dto.UserDto;
 import ru.den.planner.entity.User;
 import ru.den.plannerusers.serch.UserSearchValues;
 import ru.den.plannerusers.service.UserService;
+import ru.den.plannerutils.rest.webclient.UserWebClientBuilder;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
     private final UserService service;
+    private final UserWebClientBuilder userWebClientBuilder;
 
     @PostMapping("/id")
     public ResponseEntity<UserDto> findUserById(@RequestBody Long id) {
@@ -49,6 +49,10 @@ public class UserController {
     public ResponseEntity<?> addUser(@RequestBody User user) {
         try {
             service.addUser(user);
+            //заполняем начальные данны пользователя (в параллельном потоке)
+            if (user != null){
+                userWebClientBuilder.initUserData(user.getId()).subscribe(result -> System.out.println("user populated: " + result));
+            }
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
