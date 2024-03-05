@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import ru.den.planner.dto.UserDto;
 import ru.den.planner.entity.User;
+//import ru.den.plannerusers.mq.MessageFuncActions;
 import ru.den.plannerusers.serch.UserSearchValues;
 import ru.den.plannerusers.service.UserService;
-import ru.den.plannerutils.rest.webclient.UserWebClientBuilder;
 
 import java.util.List;
 
@@ -18,15 +19,20 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
+    private final static String TOPIC_NAME = "topic-test";
+
     private final UserService service;
-    private final UserWebClientBuilder userWebClientBuilder;
+    private final KafkaTemplate<String, Long> kafkaTemplate;
+
+    //    private final UserWebClientBuilder userWebClientBuilder;
+    //    private final MessageFuncActions messageFuncActions;
 
     @PostMapping("/id")
     public ResponseEntity<UserDto> findUserById(@RequestBody Long id) {
         try {
             return ResponseEntity.ok(service.findUserById(id));
         }catch (Exception e){
-            return new ResponseEntity("Пользователь не найден", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Пользователь не найден" + id, HttpStatus.NO_CONTENT);
         }
     }
 
@@ -49,11 +55,21 @@ public class UserController {
     public ResponseEntity<?> addUser(@RequestBody User user) {
         try {
             service.addUser(user);
-            //заполняем начальные данны пользователя (в параллельном потоке)
+
+//            //заполняем начальные данны пользователя (в параллельном потоке)
+//            if (user != null){
+//                userWebClientBuilder.initUserData(user.getId()).subscribe(result -> System.out.println("user populated: " + result));
+//            }
+//
+//            if (user != null){
+//               messageFuncActions.sendNewUserMessage(user.getId());
+//            }
             if (user != null){
-                userWebClientBuilder.initUserData(user.getId()).subscribe(result -> System.out.println("user populated: " + result));
+               kafkaTemplate.send(TOPIC_NAME, user.getId());
             }
+
             return ResponseEntity.ok().build();
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -1,5 +1,8 @@
 package ru.den.plannertodo.controller;
 
+
+import ru.den.planner.entity.User;
+import ru.den.plannertodo.feign.UserFeignClient;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,8 +12,6 @@ import ru.den.planner.dto.CategoryDto;
 import ru.den.planner.entity.Category;
 import ru.den.plannertodo.search.CategorySearchValue;
 import ru.den.plannertodo.service.CategoryService;
-import ru.den.plannerutils.rest.resttemplate.UserRestBuilder;
-import ru.den.plannerutils.rest.webclient.UserWebClientBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,9 +23,11 @@ public class CategoryController {
 
 //    private final UserRestBuilder userRestBuilder;
 
-    private final UserWebClientBuilder userWebClientBuilder;
+//    private final UserWebClientBuilder userWebClientBuilder;
 
     private final CategoryService service;
+
+    private final UserFeignClient userFeignClient;
 
     @PostMapping("/id")
     public ResponseEntity<CategoryDto> findById(@RequestBody Long id) {
@@ -51,16 +54,25 @@ public class CategoryController {
 
     @PostMapping(value = "/add", consumes = "application/json;charset=UTF-8")
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-        if (userWebClientBuilder.userExists(category.getUserId())){
-            return ResponseEntity.ok(service.addCategory(category));
-        }
+//        if (userWebClientBuilder.userExists(category.getUserId())) {
+//            return ResponseEntity.ok(service.addCategory(category));
+//        }
         /**
-           // подписываемся на резьтат (ассинхронный вызов)
-           userWebClientBuilder.userExistAsync(category.getUserId()).subscribe(user -> System.out.println("user= " + user));
+         // подписываемся на резьтат (ассинхронный вызов)
+         userWebClientBuilder.userExistAsync(category.getUserId()).subscribe(user -> System.out.println("user= " + user));
          */
 
+        ResponseEntity<User> result = userFeignClient.findUserById(category.getUserId());
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (result == null){
+            return new ResponseEntity("MC Users не доступен", HttpStatus.NO_CONTENT);
+        }
+        //вызов мс через feign interface
+        if (result.getBody() != null){
+            return ResponseEntity.ok(service.addCategory(category));
+        }
+
+        return new ResponseEntity("user_id= "+ category.getUserId() + " not found ", HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/update", consumes = "application/json;charset=UTF-8")
