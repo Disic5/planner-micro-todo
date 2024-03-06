@@ -19,6 +19,7 @@ public class TestDataService {
 
     @KafkaListener(topics = "topic-test")
     public void listenKafka(Long userId){
+        init(userId);
         System.out.println("new userId = " + userId);
     }
 
